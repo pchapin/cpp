@@ -1,0 +1,52 @@
+
+# This is a data file in a suitable format for the query-tree program. Comments start with '#'
+# and are ignored. Lines that are blank (contain only white space) are ignored. Otherwise each
+# line starts with a "key" (a single word) followed by an optional value. White space delimits
+# the keys from the values, but white space in a value is significant, except trailing white
+# space is stripped, e.g., after comment removal.
+#
+# Keys are arranged in a hierarchy that is induced by the indentation. Keys at the same level
+# are indented the same amount, but there is otherwise no requirements on indentation depth
+# other than a requirement that top level keys must not be indented at all. Indentation must
+# currently be done with only spaces. Tabs are not allowed.
+#
+# Possible future enhancements to this format include:
+#
+# + Support tabs and a mixture of tabs and spaces for indentation.
+#
+# + Support for keys with multiple values.
+#
+# + Support for a way to continue long values across multiple lines.
+#
+# + Support for Unicode.
+#
+# The example below shows calendar information for two people. However, this format can encode
+# any tree-structured information. Other examples include: todo lists, outlines, organizational
+# charts, etc. The format is intended to be very general.
+
+Jill
+    2023-10-15
+        09:00am Study session with Cindy.
+        10:30am Tutoring Center work.
+
+    2023-10-17 Motorcycle racing.
+        06:00pm Dinner with Tom to celebrate! :)    # Assuming I win, of course.
+
+    # This is tentative...
+    2023-10-18 Volunteer at the hospital
+        09:30am Pick up Tom?
+
+Tom
+    2023-10-16 Finish that paper, finally.  # Hopefully!
+        afternoon Go home to grab binoculars for the race
+    2023-10-17 Motorcycle racing. Go Jill! Go!
+    2023-10-17T18:00 Take Jill out to dinner because, of course, she was totally awesome!
+    2023-10-18 Some sort of hospital thing? I guess?
+
+# With the data above, values can be accessed by forming *key paths*. For example, the value
+# associated with the key path "/Jill/2023-10-18/09:30am" is "Pick up Tom?" Similarly the value
+# associated with "/Tom/2023-10-17T18:00" is "Take Jill out to dinner because, of course, she
+# was totally awesome!"
+#
+# The sample program, query_tree.cpp, allows the user to look up the value associated with a key
+# path.

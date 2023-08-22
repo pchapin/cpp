@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="Workspace">
+		<Project filename="Option/Option.cbp" />
+		<Project filename="Rational/Rational.cbp" />
+		<Project filename="BigInteger/BigInteger.cbp" />
+		<Project filename="Date/Date.cbp" />
+		<Project filename="Hello/Hello.cbp" />
+	</Workspace>
+</CodeBlocks_workspace_file>

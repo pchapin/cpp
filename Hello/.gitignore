@@ -1,0 +1,27 @@
+
+# Files generated directly by g++ or clang++.
+*.o
+hello
+
+# CodeBlocks specific files.
+bin
+obj
+*.layout
+*.depend
+
+# Visual Studio specific files.
+.vs
+*.user
+x64
+
+# Eclipse/CDT specific files.
+# It is controversial if this file should be ignored. Unless you are doing something complicated
+# it is best to ignore it. The file contains an environment hash that is different for every
+# developer.
+.settings/language.settings.xml
+
+# CLion specific files.
+.idea/workspace.xml
+
+# Doxygen specific files.
+doc/HTML
