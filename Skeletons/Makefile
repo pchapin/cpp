@@ -25,9 +25,13 @@ SOURCES4=reverse_file.cpp
 OBJECTS4=$(SOURCES4:.cpp=.o)
 PROG4=reverse_file
 
+SOURCES5=word_count.cpp
+OBJECTS5=$(SOURCES5:.cpp=.o)
+PROG5=word_count
+
 # Main Target
 #############
-all:	$(PROG1) $(PROG2) $(PROG3) $(PROG4)
+all:	$(PROG1) $(PROG2) $(PROG3) $(PROG4) $(PROG5)
 
 # Global Link
 #############
@@ -48,6 +52,10 @@ $(PROG3):	$(OBJECTS3)
 $(PROG4):	$(OBJECTS4)
 	$(CXX) $(OBJECTS4) $(LINKFLAGS) -o $@
 
+#PROG5
+$(PROG5):	$(OBJECTS5)
+	$(CXX) $(OBJECTS5) $(LINKFLAGS) -o $@
+
 # File Dependencies
 ###################
 
@@ -59,6 +67,8 @@ reverse_lines.o:	reverse_lines.cpp
 
 reverse_file.o:		reverse_file.cpp
 
+word_count.o:		word_count.cpp
+
 # Additional Rules
 ##################
 # -f   : Force. No error is produced if files don't exist.
@@ -68,4 +78,4 @@ reverse_file.o:		reverse_file.cpp
 # *.s  : Native assembly langauge files (if any)
 # *~   : Emacs (and other editors) backup files (if any)
 clean:
-	rm -f *.bc *.o $(PROG1) $(PROG2) $(PROG3) $(PROG4) *.s *.ll *~
+	rm -f *.bc *.o $(PROG1) $(PROG2) $(PROG3) $(PROG4) $(PROG5) *.s *.ll *~

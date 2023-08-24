@@ -1,0 +1,7 @@
+
+# Ignore the executable files.
+filter_by_char
+filter_by_line
+reverse_file
+reverse_lines
+word_count
