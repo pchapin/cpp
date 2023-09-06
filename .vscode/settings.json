@@ -1,9 +1,9 @@
 {
-    "makefile.makeDirectory": "BigInteger",
+    "makefile.makeDirectory": "Date",
     "makefile.launchConfigurations": [
         {
-            "cwd": "/Users/peter/BOK/Cpp/BigInteger",
-            "binaryPath": "/Users/peter/BOK/Cpp/BigInteger/BigInteger1_demo",
+            "cwd": "c:\\Projects\\BOK\\Cpp\\Date",
+            "binaryPath": "c:\\Projects\\BOK\\Cpp\\Date\\Date1_demo",
             "binaryArgs": []
         }
     ],

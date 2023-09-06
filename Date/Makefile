@@ -37,19 +37,19 @@ doc:
 
 # PROG1
 $(PROG1):	$(OBJECTS1)
-	$(CXX) $(OBJECTS1) $(LINKFLAGS) -o $@
+	$(LINK) $(OBJECTS1) $(LINKFLAGS) -o $@
 
 # PROG2
 $(PROG2):	$(OBJECTS2)
-	$(CXX) $(OBJECTS2) $(LINKFLAGS) -o $@
+	$(LINK) $(OBJECTS2) $(LINKFLAGS) -o $@
 
 # PROG3
 $(PROG3):	$(OBJECTS3)
-	$(CXX) $(OBJECTS3) $(LINKFLAGS) -o $@
+	$(LINK) $(OBJECTS3) $(LINKFLAGS) -o $@
 
 # Sandbox
 $(SANDBOX):	$(OBJECTS_SANDBOX)
-	$(CXX) $(OBJECTS_SANDBOX) $(LINKFLAGS) -o $@
+	$(LINK) $(OBJECTS_SANDBOX) $(LINKFLAGS) -o $@
 
 # File Dependencies
 ###################
