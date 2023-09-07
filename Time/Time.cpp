@@ -96,7 +96,25 @@ namespace vtsu {
         return seconds;
     }
 
-    // TODO: Implement the roll_forward_* methods.
+    Time Time::roll_forward_seconds( unsigned delta ) const
+    {
+        // TODO: Finish me!
+        return Time( );
+    }
+
+
+    Time Time::roll_forward_minutes( unsigned delta ) const
+    {
+        // TODO: Finish me!
+        return Time( );
+    }
+
+
+    Time Time::roll_forward_hours( unsigned delta ) const
+    {
+        // TODO: Finish me!
+        return Time( );
+    }
 
 
     // Free Functions

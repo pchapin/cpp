@@ -132,6 +132,9 @@ namespace vtsu {
         //Time roll_backward_hours( unsigned delta = 1U ) const;
 
         // The "spaceship" operator is used to generate all the relational operators.
+        //
+        // Implementation hint: You do not need to implement this method. The compiler will
+        // generate it automatically.
         auto operator<=>( const Time &other ) const = default;
 
     private:

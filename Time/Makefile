@@ -1,5 +1,5 @@
 #
-# Makefile for the Time demos.
+# Makefile for the Time demo.
 #
 
 CXX=g++
@@ -13,10 +13,6 @@ SOURCES=Time_test.cpp Time.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 PROG=Time_test
 
-SOURCES_SANDBOX=sandbox.cpp
-OBJECTS_SANDBOX=$(SOURCES_SANDBOX:.cpp=.o)
-SANDBOX=sandbox
-
 # Main Target
 #############
 all:	$(PROG)
@@ -25,11 +21,7 @@ all:	$(PROG)
 #############
 
 $(PROG):	$(OBJECTS)
-	$(CXX) $(OBJECTS) $(LINKFLAGS) -o $@
-
-# Sandbox
-$(SANDBOX):	$(OBJECTS_SANDBOX)
-	$(CXX)	$(OBJECTS_SANDBOX) $(LINKFLAGS) -o $@
+	$(LINK) $(OBJECTS) $(LINKFLAGS) -o $@
 
 # File Dependencies
 ###################
@@ -38,15 +30,10 @@ Time_test.o:		Time_test.cpp Time.hpp
 
 Time.o:				Time.cpp Time.hpp
 
-sandbox.o:			sandbox.cpp Time.hpp
-
 # Additional Rules
 ##################
-# -f   : Force. No error is produced if files don't exist.
-# *.bc : LLVM bitcode files (if any)
-# *.o  : Native object files (if any)
-# *.ll : LLVM assembly language files (if any)
-# *.s  : Native assembly langauge files (if any)
-# *~   : Emacs (and other editors) backup files (if any)
+# -f  : Force. No error is produced if files don't exist.
+# *.o : Native object files (if any)
+# *~  : Emacs (and other editors) backup files (if any)
 clean:
-	rm -f *.bc *.o $(PROG) $(SANDBOX) *.s *.ll *~
+	rm -f *.o $(PROG)  *~
