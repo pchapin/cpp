@@ -138,7 +138,7 @@ namespace vtsu {
         auto operator<=>( const Time &other ) const = default;
 
     private:
-        int hours, minutes, seconds;
+        unsigned hours, minutes, seconds;
 
         // A private method to handle the wrap-around semantics is used by both constructors.
         void set( unsigned hours, unsigned minutes, unsigned seconds );
