@@ -22,15 +22,15 @@ namespace vtsu {
     void Time::set( unsigned hours, unsigned minutes, unsigned seconds )
     {
         // Compute the total number of seconds in the incoming time.
-        long total = hours * 3600L + minutes * 60L + seconds;
+        unsigned long total = hours * 3600UL + minutes * 60UL + seconds;
 
-        this->seconds = total % 60L;
-        total = total / 60L;
+        this->seconds = total % 60UL;
+        total = total / 60UL;
 
-        this->minutes = total % 60L;
-        total = total / 60L;
+        this->minutes = total % 60UL;
+        total = total / 60UL;
 
-        this->hours   = total % 24L;
+        this->hours   = total % 24UL;
     }
 
 
@@ -60,7 +60,7 @@ namespace vtsu {
 
         // Try to match the entire string. If the match files, set the Time object to 00:00:00.
         if( !regex_match( time_string, matches, date_matcher ) ) {
-            hours = minutes = seconds = 0;
+            hours = minutes = seconds = 0U;
             return;
         }
 
