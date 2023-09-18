@@ -149,20 +149,20 @@ void test3( )
     TestCase minutes_cases[] = {
         { vtsu::Time( "00:00:00" ),   1, vtsu::Time( "00:01:00" ) },
         { vtsu::Time( "00:00:00" ),  59, vtsu::Time( "00:59:00" ) },
-        { vtsu::Time( "00:00:00" ),  60, vtsu::Time( "00:00:00" ) },
-        { vtsu::Time( "00:00:00" ),  61, vtsu::Time( "00:01:00" ) },
-        { vtsu::Time( "00:00:00" ), 120, vtsu::Time( "00:00:00" ) },
-        { vtsu::Time( "00:00:00" ), 121, vtsu::Time( "00:01:00" ) },
+        { vtsu::Time( "00:00:00" ),  60, vtsu::Time( "01:00:00" ) },
+        { vtsu::Time( "00:00:00" ),  61, vtsu::Time( "01:01:00" ) },
+        { vtsu::Time( "00:00:00" ), 120, vtsu::Time( "02:00:00" ) },
+        { vtsu::Time( "00:00:00" ), 121, vtsu::Time( "02:01:00" ) },
         { vtsu::Time( "11:22:33" ),   1, vtsu::Time( "11:23:33" ) }
     };
 
     TestCase seconds_cases[] = {
         { vtsu::Time( "00:00:00" ),     1, vtsu::Time( "00:00:01" ) },
         { vtsu::Time( "00:00:00" ),    59, vtsu::Time( "00:00:59" ) },
-        { vtsu::Time( "00:00:00" ),    60, vtsu::Time( "00:00:00" ) },
-        { vtsu::Time( "00:00:00" ),    61, vtsu::Time( "00:00:01" ) },
-        { vtsu::Time( "00:00:00" ),   120, vtsu::Time( "00:00:00" ) },
-        { vtsu::Time( "00:00:00" ),   121, vtsu::Time( "00:00:01" ) },
+        { vtsu::Time( "00:00:00" ),    60, vtsu::Time( "00:01:00" ) },
+        { vtsu::Time( "00:00:00" ),    61, vtsu::Time( "00:01:01" ) },
+        { vtsu::Time( "00:00:00" ),   120, vtsu::Time( "00:02:00" ) },
+        { vtsu::Time( "00:00:00" ),   121, vtsu::Time( "00:02:01" ) },
         { vtsu::Time( "11:22:33" ),     1, vtsu::Time( "11:22:34" ) },
         { vtsu::Time( "00:00:00" ), 86400, vtsu::Time( "00:00:00" ) },
         { vtsu::Time( "00:00:00" ), 86401, vtsu::Time( "00:00:01" ) }

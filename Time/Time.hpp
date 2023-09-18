@@ -95,9 +95,10 @@ namespace vtsu {
 
         //! Advance the time by a given number of seconds.
         /*!
-         * This method computes a new time by advancing 'this' time by the specified number of
-         * seconds. This method does not modify 'this' time, but instead returns a new time with
-         * the desired value.
+         * This method computes a new time by advancing this Time by the specified number of
+         * seconds. This method does not modify this Time, but instead returns a new time with
+         * the desired value. Large values of `delta` cause overflow into the minutes and hours
+         * as necessary.
          *
          * \param delta The number of seconds to advance the time.
          */
@@ -105,9 +106,10 @@ namespace vtsu {
 
         //! Advance the time by a given number of minutes.
         /*!
-         * This method computes a new time by advancing 'this' time by the specified number of
-         * minutes. This method does not modify 'this' time, but instead returns a new time with
-         * the desired value.
+         * This method computes a new time by advancing this Time by the specified number of
+         * minutes. This method does not modify this Time, but instead returns a new time with
+         * the desired value. Large values of `delta` cause overflow into the hours as
+         * necessary.
          * 
          * \param delta The number of minutes to advance the time.
          */
@@ -115,12 +117,12 @@ namespace vtsu {
 
         //! Advance the time by a given number of hours.
         /*!
-         * This method computes a new time by advancing 'this' time by the specified number of
-         * hours. This method does not modify 'this' time, but instead returns a new time with
-         * the desired value.
+         * This method computes a new time by advancing this Time by the specified number of
+         * hours. This method does not modify this Time, but instead returns a new time with the
+         * desired value.
          * 
-         * Implementation Hint: Both roll_forward_minutes( ) and roll_forward_hours( ) can be
-         * implemented as inline methods that call roll_forward_seconds( ).
+         * Implementation Hint: Both `roll_forward_minutes` and `roll_forward_hours` can be
+         * implemented as inline methods that call `roll_forward_seconds`.
          * 
          * \param delta The number of hours to advance the time.
          */
@@ -150,10 +152,10 @@ namespace vtsu {
 
     //! Computes how many seconds difference there is between two times.
     /*!
-     * The return value is zero if 'future' and 'past' are the same time, positive if 'future'
-     * comes after 'past', and negative otherwise. Notice that the return type is signed
-     * because the difference can be negative if the first time comes before the second. For
-     * example: Time( "00:01:00" ) - Time( "00:01:01" ) == -1.
+     * The return value is zero if `future` and `past` are the same time, positive if `future`
+     * comes after `past`, and negative otherwise. Notice that the return type is signed because
+     * the difference can be negative if the first time comes before the second. For example:
+     * Time( "00:01:00" ) - Time( "00:01:01" ) == -1.
      * 
      * Portability Note: The maximum difference between two times is 86,399 seconds. This might
      * be outside the range of int on some systems. However, systems that use 32-bit integers
@@ -164,6 +166,11 @@ namespace vtsu {
     int operator-( const Time &future, const Time &past );
 
     //! Writes a Time to an output stream.
+    /*!
+     * This function does not need to handle the fill character, width specifier, or
+     * justification flag set by the caller. It should simply write the time in the form
+     * "hh:mm:ss" (no quotes) using zero-filled fields of two digits each.
+     */
     std::ostream &operator<<( std::ostream &output, const Time &the_time );
 }
 
