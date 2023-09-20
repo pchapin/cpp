@@ -76,7 +76,7 @@ namespace vtsu {
         using compute_type = std::uint64_t;
 
         // INVARIANT: If the represented value is zero, `digit_count` is zero and `digits` is
-        // the null pointer. Otherwise `digits` points at an array of size `digit_count`
+        // the null pointer. Otherwise, `digits` points at an array of size `digit_count`
         // containing the base 2**32 digits of the represented value. The array element at position
         // 0 is the least significant digit of the value. Leading zero digits are never stored.
         storage_type *digits;

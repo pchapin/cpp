@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cctype>
 #include <cstring>
+#include <limits>
 #include "BigInteger4.hpp"
 
 using namespace std;
@@ -100,6 +101,13 @@ namespace vtsu {
         if( carry != 0 ) {
             digits.push_back( static_cast<storage_type>( carry ) );
         }
+        return *this;
+    }
+
+
+    BigInteger &BigInteger::operator*=( const BigInteger &right )
+    {
+        // TODO: Finish Me!
         return *this;
     }
 

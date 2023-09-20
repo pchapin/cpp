@@ -3,8 +3,8 @@
  *  \author Peter Chapin <peter.chapin@vermontstate.edu>
  */
 
-#ifndef BIGINTEGER_HPP
-#define BIGINTEGER_HPP
+#ifndef VTSU_BIGINTEGER_HPP
+#define VTSU_BIGINTEGER_HPP
 
 #include <iostream>
 #include <stdexcept>

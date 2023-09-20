@@ -67,7 +67,7 @@ namespace vtsu {
     // This method "drains" the other object and transfers its value into 'this' object. Note
     // that it is careful to maintain the destructibility of the other object. This is because
     // even after being moved-from, the compiler will still destroy the "shell" of the other
-    // object. The invocation of the destructor on that shell must be well behaved.
+    // object. The invocation of the destructor on that shell must be well-behaved.
     //
     BigInteger::BigInteger( BigInteger &&other )
     {
@@ -87,7 +87,7 @@ namespace vtsu {
     // ------------------------
     //
     // This method has the same relationship to the move constructor as the copy assignment
-    // operator has to the copy constructor. In particular it must remove the value in 'this'
+    // operator has to the copy constructor. In particular, it must remove the value in 'this'
     // object before performing the move.
     //
     BigInteger &BigInteger::operator=( BigInteger &&other )
@@ -224,6 +224,13 @@ namespace vtsu {
             expand( );
             digits[digit_count - 1] = static_cast<storage_type>( carry );
         }
+        return *this;
+    }
+
+
+    BigInteger &BigInteger::operator*=( const BigInteger &right )
+    {
+        // TODO: Finish Me!
         return *this;
     }
 
