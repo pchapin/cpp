@@ -33,13 +33,17 @@ namespace vtsu {
         //! Exception thrown when an invalid format is used to construct a BigInteger.
         class InvalidFormat : std::runtime_error {
         public:
-            InvalidFormat( const std::string &message ) : std::runtime_error( message ) { }
+            explicit InvalidFormat( const std::string &message ) :
+                std::runtime_error( message )
+            { }
         };
 
         //! Exception thrown when an operation is not implemented.
         class NotImplemented : std::logic_error {
         public:
-            NotImplemented( const std::string &message ) : std::logic_error( message ) { }
+            explicit NotImplemented( const std::string &message ) :
+                std::logic_error( message )
+            { }
         };
 
         // Default constructor. Creates a BigInteger with the value 0.
@@ -63,7 +67,7 @@ namespace vtsu {
          * represented by a BigInteger.
          */
         BigInteger( const std::string &raw_digits );
-        
+
         //! Returns the number of decimal digits in the the number.
         /*!
          * Leading zero digits are not included in the count. The value 0 has zero digits.
@@ -85,7 +89,7 @@ namespace vtsu {
         /*!
          * \throws std::overflow_error if the BigInteger is too large to fit in an unsigned long.
          */
-        operator unsigned long( ) const;
+        explicit operator unsigned long( ) const;
 
     private:
         // Static members exist even if you never create any class instances. Static constants
