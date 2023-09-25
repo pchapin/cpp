@@ -20,7 +20,7 @@ namespace vtsu {
      * arithmetic operation results in a value that is too large to be represented. The
      * exception `std::underflow_error` is thrown if an arithmetic operation results in a value
      * that is too small to be represented (i.e., negative).
-     * 
+     *
      * Implicit conversions from `unsigned long` and `std::string` are supported. Explicit
      * conversions to `unsigned long` are supported.
      */
@@ -61,7 +61,7 @@ namespace vtsu {
          * \param raw_digits The string of decimal digits. The digits are assumed to be in
          *  big-endian order. That is, the most significant digit is first and the least
          *  significant digit is last. No characters other than digits are allowed.
-         * 
+         *
          * \throws InvalidFormat if the string contains any non-digit characters.
          * \throws std::overflow_error if the string contains a value that is too large to be
          * represented by a BigInteger.
@@ -72,7 +72,7 @@ namespace vtsu {
         /*!
          * Leading zero digits are not included in the count. The value 0 has zero digits.
          */
-        int number_of_digits( ) const;
+        size_t number_of_digits( ) const;
 
         // Operator methods for supporting the usual arithmetic operations.
         //

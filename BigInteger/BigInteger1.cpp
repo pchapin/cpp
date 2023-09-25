@@ -80,7 +80,7 @@ namespace vtsu {
     }
 
 
-    int BigInteger::number_of_digits( ) const
+    size_t BigInteger::number_of_digits( ) const
     {
         // Count leading zeros.
         size_t leading_zeros = 0;
