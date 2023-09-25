@@ -48,8 +48,9 @@ namespace vtsu {
         memset( digits, 0, sizeof( digits ) );
 
         // Check to ensure all characters of the string are digits.
-        for_each( raw_digits.begin( ), raw_digits.end( ), [ ]( char c ) {
-            if( !isdigit( c ) ) throw InvalidFormat( "Non-digit in BigInteger::BigInteger( const string & )" );
+        for_each( raw_digits.begin( ), raw_digits.end( ), []( char c ) {
+            if( !isdigit( c ) )
+                throw InvalidFormat( "Non-digit in BigInteger::BigInteger( const string & )" );
         } );
 
         // Find the first non-zero digit.
@@ -103,7 +104,7 @@ namespace vtsu {
         for( size_t digit_index = 0; digit_index < maximum_size; ++digit_index ) {
             sum = digits[digit_index] + right.digits[digit_index] + carry;
             digits[digit_index] = sum % 10;
-            carry = sum/10;
+            carry = sum / 10;
         }
         // TODO: *this is changed even if an exception is thrown. Is that OK? (probably not)
         if( carry != 0 ) throw std::overflow_error( "Overflow in BigInteger::operator+=" );
@@ -149,7 +150,7 @@ namespace vtsu {
         int digit_index = maximum_size - 1;
 
         while( digit_index >= 0 ) {
-            value = 10*value + digits[digit_index];
+            value = 10 * value + digits[digit_index];
             digit_index--;
         }
         // TODO: Add overflow check.

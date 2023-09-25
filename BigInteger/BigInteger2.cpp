@@ -1,6 +1,6 @@
 /*! \file   BigInteger2.cpp
  *  \brief  A "second generation" definition of an extended precision integer class.
- *  \author Peter C. Chapin <pchapin@vtc.edu>
+ *  \author Peter Chapin <peter.chapin@vermontstate.edu>
  */
 
 #include <iostream>
@@ -93,7 +93,8 @@ namespace vtsu {
 
         // Check to ensure all characters of the string are digits.
         for_each( raw_digits.begin( ), raw_digits.end( ), [ ]( char c ) {
-            if( !isdigit( c ) ) throw InvalidFormat( "Non-digit in BigInteger::BigInteger( const string & )" );
+            if( !isdigit( c ) )
+                throw InvalidFormat( "Non-digit in BigInteger::BigInteger( const string & )" );
         } );
 
         // Find the first non-zero digit.
@@ -105,12 +106,13 @@ namespace vtsu {
         bool in_number = false;
         for( char digit_character : raw_digits ) {
             if( !in_number && digit_character == '0' ) continue;
- 
+
             in_number = true;
             expand( );
             shift_left( );
             digits[0] = static_cast<unsigned short>( digit_character - '0' );
         }
+        // TODO: The value of `digit_count` is not being set. This is a bug!
     }
 
 
@@ -167,6 +169,7 @@ namespace vtsu {
             digits[digit_count - 1] = carry;
         }
         return *this;
+        // TODO: The value of `digit_count` is not being set. This is a bug!
     }
 
 

@@ -24,13 +24,17 @@ namespace vtsu {
         //! Exception thrown when an invalid format is used to construct a BigInteger.
         class InvalidFormat : std::runtime_error {
         public:
-            InvalidFormat( const std::string &message ) : std::runtime_error( message ) { }
+            explicit InvalidFormat( const std::string &message ) :
+                std::runtime_error( message )
+            { }
         };
 
         //! Exception thrown when an operation is not implemented.
         class NotImplemented : std::logic_error {
         public:
-            NotImplemented( const std::string &message ) : std::logic_error( message ) { }
+            explicit NotImplemented( const std::string &message ) :
+                std::logic_error( message )
+            { }
         };
 
         BigInteger( );                                    // Default constructor.
@@ -38,7 +42,7 @@ namespace vtsu {
         BigInteger &operator=( const BigInteger &other ); // Copy assignment operator.
         BigInteger( BigInteger &&other );                 // Move constructor.
         BigInteger &operator=( BigInteger &&other );      // Move assignment operator.
-       ~BigInteger( );                                    // Destructor.
+        ~BigInteger( );                                   // Destructor.
 
         BigInteger( unsigned long value );
 
@@ -46,7 +50,7 @@ namespace vtsu {
          * \param raw_digits The string of decimal digits. The digits are assumed to be in
          *  big-endian order. That is, the most significant digit is first and the least
          *  significant digit is last. No characters other than digits are allowed.
-         * 
+         *
          * \throws InvalidFormat if the string contains any non-digit characters.
          * \throws std::overflow_error if the string contains a value that is too large to be
          * represented by a BigInteger.
@@ -65,7 +69,7 @@ namespace vtsu {
         /*!
          * \throws std::overflow_error if the BigInteger is too large to fit in an unsigned long.
          */
-        operator unsigned long( );
+        explicit operator unsigned long( );
 
     private:
         // This form of `using` creates a type alias. It is the modern C++ way of doing C's
@@ -80,7 +84,7 @@ namespace vtsu {
         // containing the base 2**32 digits of the represented value. The array element at position
         // 0 is the least significant digit of the value. Leading zero digits are never stored.
         storage_type *digits;
-        unsigned      digit_count;
+        size_t digit_count;
 
         void expand( );      // Expands the object to hold an additional digit.
         void shift_left( );  // Moves all digits to the left one position (except the last).
@@ -91,6 +95,14 @@ namespace vtsu {
     {
         BigInteger temp{ left };
         temp += right;
+        return temp;
+    }
+
+
+    inline BigInteger operator*( const BigInteger &left, const BigInteger &right )
+    {
+        BigInteger temp{ left };
+        temp *= right;
         return temp;
     }
 

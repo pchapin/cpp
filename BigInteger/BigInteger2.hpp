@@ -29,19 +29,23 @@ namespace vtsu {
         //! Exception thrown when an invalid format is used to construct a BigInteger.
         class InvalidFormat : std::runtime_error {
         public:
-            InvalidFormat( const std::string &message ) : std::runtime_error( message ) { }
+            explicit InvalidFormat( const std::string &message ) :
+                std::runtime_error( message )
+            { }
         };
 
         //! Exception thrown when an operation is not implemented.
         class NotImplemented : std::logic_error {
         public:
-            NotImplemented( const std::string &message ) : std::logic_error( message ) { }
+            explicit NotImplemented( const std::string &message ) :
+                std::logic_error( message )
+            { }
         };
 
         BigInteger( );                                    // Default constructor.
         BigInteger( const BigInteger &other );            // Copy constructor.
         BigInteger &operator=( const BigInteger &other ); // Copy assignment operator.
-       ~BigInteger( );                                    // Destructor.
+        ~BigInteger( );                                    // Destructor.
 
         BigInteger( unsigned long value );
 
@@ -49,7 +53,7 @@ namespace vtsu {
          * \param raw_digits The string of decimal digits. The digits are assumed to be in
          *  big-endian order. That is, the most significant digit is first and the least
          *  significant digit is last. No characters other than digits are allowed.
-         * 
+         *
          * \throws InvalidFormat if the string contains any non-digit characters.
          * \throws std::overflow_error if the string contains a value that is too large to be
          * represented by a BigInteger.
@@ -63,15 +67,21 @@ namespace vtsu {
         // operands. These methods return a reference to 'this' so that they can be chained.
         BigInteger &operator+=( const BigInteger &right );
 
+        // TODO: Implement the remaining operators.
+        // BigInteger &operator-=( const BigInteger &right );
+        // BigInteger &operator*=( const BigInteger &right );
+        // BigInteger &operator/=( const BigInteger &right );
+        // BigInteger &operator%=( const BigInteger &right );
+
         //! Conversion operator to convert BigInteger to unsigned long.
         /*!
          * \throws std::overflow_error if the BigInteger is too large to fit in an unsigned long.
          */
-       operator unsigned long( );
+        explicit operator unsigned long( );
 
     private:
         // INVARIANT: If the represented value is zero, `digit_count` is zero and `digits` is
-        // the null pointer. Otherwise `digits` points at an array of size `digit_count`
+        // the null pointer. Otherwise, `digits` points at an array of size `digit_count`
         // containing the base 10 digits of the represented value. The array element at position
         // 0 is the least significant digit of the value. Leading zero digits are never stored.
 
@@ -79,7 +89,7 @@ namespace vtsu {
         // than the type int (or unsigned int) would be. Further improvements are possible. See
         // BigInteger3.hpp for one approach.
         unsigned short *digits;
-        unsigned        digit_count;   // The digit_count can never be negative.
+        size_t digit_count;  // The digit_count can never be negative.
 
         void expand( );      // Expands the object to hold an additional digit.
         void shift_left( );  // Moves all digits to the left one position (except the last).

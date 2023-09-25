@@ -1,6 +1,6 @@
 /*! \file   BigInteger3.cpp
  *  \brief  A "third generation" definition of an extended precision integer class.
- *  \author Peter Chapin <pchapin@vtc.edu>
+ *  \author Peter Chapin <peter.chapin@vermontstate.edu>
  */
 
 #include <cctype>
@@ -125,7 +125,7 @@ namespace vtsu {
             static_cast<unsigned long>( numeric_limits<storage_type>::max( ) ) + 1;
 
         // Be sure the number is initialized to zero.
-        digit_count = 0U;
+        digit_count = 0;
         digits = nullptr;
 
         while( value > 0UL ) {
