@@ -1,11 +1,12 @@
 /*! \file   Matrix.hpp
  *  \brief  A class for representing matrices of floating point values.
- *  \author [YOUR NAME]
+ *  \author Peter Chapin <peter.chapin@vermontstate.edu>
  */
 
 #ifndef MATRIX_HPP
 #define MATRIX_HPP
 
+#include <algorithm>
 #include <cstddef>
 #include <initializer_list>
 #include <iosfwd>
@@ -47,8 +48,8 @@ namespace vtsu {
 
         //! Constructs a matrix with all elements initialized to zero.
         /*!
-         * Once a Matrix has been created, its size cannot be changed (although the values of
-         * the elements can be).
+         * In general once a Matrix has been created, its size cannot be changed (although the
+         * values of the elements can be).
          *
          * \param row_count The number of rows in the Matrix.
          * \param column_count The number of columns in the Matrix.
@@ -61,10 +62,12 @@ namespace vtsu {
         /*!
          * This constructor allows a Matrix to be initialized using an initializer list of
          * initializer lists. The outer initializer list represents the rows of the Matrix, and
-         * the inner initializer lists represent the columns of a particular row.
+         * the inner initializer lists represent the columns of a particular row. If the length
+         * of the rows differs, the Matrix uses the length of the longest row and pads the
+         * shorter rows with zeros (default constructed Ts).
          *
-         * \throws InvalidSize if the rows are not of equal length, or if the number of rows or
-         * the number of columns is zero.
+         * \throws InvalidSize if the number of rows is zero or if all of the rows have zero
+         * length.
          */
         Matrix( std::initializer_list<std::initializer_list<T>> init_list );
 
@@ -84,10 +87,10 @@ namespace vtsu {
         Matrix &operator=( Matrix &&other );
 
         // Return the dimensions of this Matrix.
-        index_type rows( ) const
+        [[nodiscard]] index_type rows( ) const
         { return row_count; }
 
-        index_type columns( ) const
+        [[nodiscard]] index_type columns( ) const
         { return column_count; }
 
         //! Read only access to a matrix element.
@@ -99,7 +102,7 @@ namespace vtsu {
          *
          * \throws OutOfBoundsIndex if either index is out of bounds.
          */
-        T operator()( index_type row, index_type column ) const;
+        [[nodiscard]] T operator()( index_type row, index_type column ) const;
 
         //! Read/Write access to a matrix element.
         /*!
@@ -110,7 +113,7 @@ namespace vtsu {
          *
          * \throws OutOfBoundsIndex if either index is out of bounds.
          */
-        T &operator()( index_type row, index_type column );
+        [[nodiscard]] T &operator()( index_type row, index_type column );
 
         // Matrix math. Throws InvalidSize if incompatible matrix dimensions are used.
         Matrix &operator+=( const Matrix &other );
@@ -129,7 +132,7 @@ namespace vtsu {
     // ==============
 
     template<typename T>
-    inline Matrix<T> operator+( const Matrix<T> &left, const Matrix<T> &right )
+    [[nodiscard]] inline Matrix<T> operator+( const Matrix<T> &left, const Matrix<T> &right )
     {
         Matrix<T> temp{ left };
         temp += right;
@@ -137,7 +140,7 @@ namespace vtsu {
     }
 
     template<typename T>
-    inline Matrix<T> operator-( const Matrix<T> &left, const Matrix<T> &right )
+    [[nodiscard]] inline Matrix<T> operator-( const Matrix<T> &left, const Matrix<T> &right )
     {
         Matrix<T> temp{ left };
         temp -= right;
@@ -145,7 +148,7 @@ namespace vtsu {
     }
 
     template<typename T>
-    inline Matrix<T> operator*( const Matrix<T> &left, const Matrix<T> &right )
+    [[nodiscard]] inline Matrix<T> operator*( const Matrix<T> &left, const Matrix<T> &right )
     {
         Matrix<T> temp{ left };
         temp *= right;
@@ -157,17 +160,95 @@ namespace vtsu {
     std::ostream &operator<<( std::ostream &output, const Matrix<T> &m )
     {
         output << "[\n";
-        for( typename Matrix<T>::index_type i = 0; i < m.row_count( ); ++i ) {
+        for( typename Matrix<T>::index_type i = 0; i < m.rows( ); ++i ) {
             output << "  [ ";
-            for( typename Matrix<T>::index_type j = 0; j < m.column_count( ); ++j ) {
-                const char *column_terminator = ( j < m.column_count( ) - 1 ) ? ", " : " ";
+            for( typename Matrix<T>::index_type j = 0; j < m.columns( ); ++j ) {
+                const char *column_terminator = ( j < m.columns( ) - 1 ) ? ", " : " ";
                 output << m( i, j ) << column_terminator;
             }
 
-            const char *row_terminator = ( i < m.row_count( ) - 1 ) ? "],\n" : "]\n";
+            const char *row_terminator = ( i < m.rows( ) - 1 ) ? "],\n" : "]\n";
             output << row_terminator;
         }
         output << "]\n";
+        return output;
+    }
+
+    // Matrix Implementation
+    // =====================
+
+    template<typename T>
+    Matrix<T>::Matrix( index_type row_count, index_type column_count ) :
+        row_count( row_count ), column_count( column_count ), elements( nullptr )
+    {
+        if( row_count == 0 || column_count == 0 ) {
+            throw InvalidSize( "Matrix must have non-zero size" );
+        }
+
+        elements = new T[row_count * column_count];
+        std::fill( elements, elements + row_count * column_count, T{ } );
+    }
+
+
+    template<typename T>
+    Matrix<T>::~Matrix( )
+    {
+        delete [] elements;
+    }
+
+
+    template<typename T>
+    Matrix<T>::Matrix( std::initializer_list<std::initializer_list<T>> init_list ) :
+        row_count( init_list.size( ) ), column_count( 0 ), elements( nullptr )
+    {
+        if( row_count == 0 ) {
+            throw InvalidSize( "Matrix must have non-zero size" );
+        }
+
+        // Find the maximum number of columns in the initializer list.
+        for( const auto &row : init_list ) {
+            if( row.size( ) > column_count ) {
+                column_count = row.size( );
+            }
+        }
+        if( column_count == 0 ) {
+            throw InvalidSize( "Matrix must have non-zero size" );
+        }
+
+        // Allocate the elements array.
+        elements = new T[row_count * column_count];
+        std::fill( elements, elements + row_count * column_count, T{ } );
+
+        // Copy the initializer list into the elements array.
+        index_type row_index = 0;
+        for( const auto &row : init_list ) {
+            index_type column_index = 0;
+            for( const auto &element : row ) {
+                elements[row_index * column_count + column_index] = element;
+                ++column_index;
+            }
+            ++row_index;
+        }
+    }
+
+
+    template<typename T>
+    T Matrix<T>::operator()( index_type row, index_type column ) const
+    {
+        if( row >= row_count || column >= column_count ) {
+            throw OutOfBoundsIndex( "Matrix index out of bounds" );
+        }
+        return elements[row * column_count + column];
+    }
+
+
+    template<typename T>
+    T &Matrix<T>::operator()( index_type row, index_type column )
+    {
+        if( row >= row_count || column >= column_count ) {
+            throw OutOfBoundsIndex( "Matrix index out of bounds" );
+        }
+        return elements[row * column_count + column];
     }
 
 }
