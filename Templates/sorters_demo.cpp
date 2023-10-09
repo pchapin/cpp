@@ -62,49 +62,49 @@ int main( )
     // all are at least as powerful as forward iterators).
 
     cout << "\nSorting array1...\n";
-    bubble_sort( array1, array1 + 6 );
+    vtsu::bubble_sort( array1, array1 + 6 );
 
     for( int element : array1 ) {
         cout << element << "\n";
     }
 
     cout << "\nSorting array1 in a custom order...\n";
-    bubble_sort( array1, array1 + 6, my_ordering );
+    vtsu::bubble_sort( array1, array1 + 6, my_ordering );
 
     for( int element : array1 ) {
         cout << element << "\n";
     }
 
     cout << "\nSorting array1 in a weird order...\n";
-    bubble_sort( array1, array1 + 6, strange_order );
+    vtsu::bubble_sort( array1, array1 + 6, strange_order );
 
     for( int element : array1 ) {
         cout << element << "\n";
     }
 
     cout << "\nSorting array2...\n";
-    bubble_sort( array2, array2 + 4 );
+    vtsu::bubble_sort( array2, array2 + 4 );
 
     for( const string &element : array2 ) {
         cout << element << "\n";
     }
 
     cout << "\nSorting my_vector...\n";
-    bubble_sort( my_vector.begin(), my_vector.end() );
+    vtsu::bubble_sort( my_vector.begin(), my_vector.end() );
 
     for( int element : my_vector ) {
         cout << element << "\n";
     }
 
     cout << "\nSorting my_list...\n";
-    bubble_sort( my_list.begin(), my_list.end() );
+    vtsu::bubble_sort( my_list.begin(), my_list.end() );
 
     for( int element : my_list ) {
         cout << element << "\n";
     }
 
     cout << "\nSorting array1 in descending order...\n";
-    bubble_sort( array1, array1 + 6, std::greater<int>() );
+    vtsu::bubble_sort( array1, array1 + 6, std::greater<int>( ) );
 
     for( int element : array1 ) {
         cout << element << "\n";
