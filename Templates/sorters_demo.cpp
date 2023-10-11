@@ -61,53 +61,60 @@ int main( )
     // Notice that the various library containers also have suitable iterator types defined (and
     // all are at least as powerful as forward iterators).
 
-    cout << "\nSorting array1...\n";
-    vtsu::bubble_sort( array1, array1 + 6 );
+    cout << "\nSorting array1..." << endl;
+    // vtsu::bubble_sort( array1, array1 + 6 );
+    vtsu::bubble_sort( begin( array1 ), end( array1 ) );
 
     for( int element : array1 ) {
-        cout << element << "\n";
+        cout << element << endl;
     }
 
-    cout << "\nSorting array1 in a custom order...\n";
-    vtsu::bubble_sort( array1, array1 + 6, my_ordering );
+    cout << "\nSorting array1 in a custom order..." << endl;
+    // vtsu::bubble_sort( array1, array1 + 6, my_ordering );
+    vtsu::bubble_sort( begin( array1 ), end( array1 ), my_ordering );
 
     for( int element : array1 ) {
-        cout << element << "\n";
+        cout << element << endl;
     }
 
-    cout << "\nSorting array1 in a weird order...\n";
-    vtsu::bubble_sort( array1, array1 + 6, strange_order );
+    cout << "\nSorting array1 in a weird order..." << endl;
+    // vtsu::bubble_sort( array1, array1 + 6, strange_order );
+    vtsu::bubble_sort( begin( array1 ), end( array1 ), strange_order );
 
     for( int element : array1 ) {
-        cout << element << "\n";
+        cout << element << endl;
     }
 
-    cout << "\nSorting array2...\n";
-    vtsu::bubble_sort( array2, array2 + 4 );
+    cout << "\nSorting array2..." << endl;
+    // vtsu::bubble_sort( array2, array2 + 4 );
+    vtsu::bubble_sort( begin( array2 ), end( array2 ) );
 
     for( const string &element : array2 ) {
-        cout << element << "\n";
+        cout << element << endl;
     }
 
-    cout << "\nSorting my_vector...\n";
-    vtsu::bubble_sort( my_vector.begin(), my_vector.end() );
+    cout << "\nSorting my_vector..." << endl;
+    // vtsu::bubble_sort( my_vector.begin(), my_vector.end() );
+    vtsu::bubble_sort( begin( my_vector ), end( my_vector ) );
 
     for( int element : my_vector ) {
-        cout << element << "\n";
+        cout << element << endl;
     }
 
-    cout << "\nSorting my_list...\n";
-    vtsu::bubble_sort( my_list.begin(), my_list.end() );
+    cout << "\nSorting my_list..." << endl;
+    // vtsu::bubble_sort( my_list.begin(), my_list.end() );
+    vtsu::bubble_sort( begin( my_list ), end( my_list ) );
 
     for( int element : my_list ) {
-        cout << element << "\n";
+        cout << element << endl;
     }
 
-    cout << "\nSorting array1 in descending order...\n";
-    vtsu::bubble_sort( array1, array1 + 6, std::greater<int>( ) );
+    cout << "\nSorting array1 in descending order..." << endl;
+    // vtsu::bubble_sort( array1, array1 + 6, std::greater<int>( ) );
+    vtsu::bubble_sort( begin( array1 ), end( array1 ), std::greater<int>( ) );
 
     for( int element : array1 ) {
-        cout << element << "\n";
+        cout << element << endl;
     }
 
     return EXIT_SUCCESS;

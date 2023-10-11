@@ -20,13 +20,13 @@ namespace vtsu {
         // is defined, the programmer should also create a specialization of iterator_traits with an
         // appropriate `value_type` alias.
         //
-        // The `typename` in front of the declaration is required so the compiler understands that
-        // the name `value_type` inside the traits structure is the name of a type. C++ needs to
-        // know what are type names and what aren't in order to parse your program. However, because
-        // templates can be manually specialized, the compiler can't tell until instantiation time
-        // if this particular specialization is from the general template or a manually specialized
-        // one where `value_type` is the name of a data member. Thus you have to explain what's
-        // going on.
+        // The `typename` in front of the declaration below is required so the compiler
+        // understands that the name `value_type` inside the traits structure is the name of a
+        // type. C++ needs to know what are type names and what aren't in order to parse your
+        // program. However, because templates can be manually specialized, the compiler can't
+        // tell until instantiation time if this particular specialization is from the general
+        // template or a manually specialized one where `value_type` is (for some reason) the
+        // name of a data member. Thus you have to explain what's going on.
         
         // typename std::iterator_traits<ForwardIterator>::value_type temp( *first );
 
