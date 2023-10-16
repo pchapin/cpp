@@ -100,16 +100,16 @@ int main( )
     cout << endl;
 
     cout << "\nSorting array1 in descending order..." << endl;
-    // vtsu::bubble_sort_4( array1, array1 + 6, my_ordering );
+    // vtsu::bubble_sort( array1, array1 + 6, my_ordering );
     vtsu::bubble_sort( begin( array1 ), end( array1 ), my_ordering );
-    // One could also use `std::greater<int>( )` here.
+    // One could also use `std::greater<int>{ }` here.
 
     for( int element : array1 ) {
         cout << element << " ";
     }
     cout << endl;
 
-    cout << "\nSorting array1 in a weird order..." << endl;
+    cout << "\nSorting array1 in a strange order..." << endl;
     // vtsu::bubble_sort( array1, array1 + 6, strange_order );
     vtsu::bubble_sort( begin( array1 ), end( array1 ), strange_order );
 

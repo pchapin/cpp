@@ -1,6 +1,6 @@
 
-#ifndef SORTERS_HPP
-#define SORTERS_HPP
+#ifndef VTSU_SORTERS_HPP
+#define VTSU_SORTERS_HPP
 
 #include <algorithm>    // Needed for std::swap.
 #include <iterator>     // Needed for std::iterator_traits.
@@ -100,7 +100,7 @@ namespace vtsu {
 
 
     // This version further generalizes the algorithm to allow the use of a user-supplied
-    // comparison function. This is useful when the elements of the sequence to be sorted do not
+    // comparison object. This is useful when the elements of the sequence to be sorted do not
     // have an `operator<` defined for them or when the user wants to sort the elements in some
     // order other than ascending. 
 
