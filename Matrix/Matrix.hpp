@@ -51,12 +51,12 @@ namespace vtsu {
          * In general once a Matrix has been created, its size cannot be changed (although the
          * values of the elements can be).
          *
-         * \param row_count The number of rows in the Matrix.
-         * \param column_count The number of columns in the Matrix.
+         * \param incoming_row_count The number of rows in the Matrix.
+         * \param incoming_column_count The number of columns in the Matrix.
          *
-         * \throws InvalidSize if either row_count or column_count is zero.
+         * \throws InvalidSize if either incoming_row_count or incoming_column_count is zero.
          */
-        Matrix( index_type row_count, index_type column_count );
+        Matrix( index_type incoming_row_count, index_type incoming_column_count );
 
         //! Initializer list constructor.
         /*!
@@ -120,6 +120,9 @@ namespace vtsu {
         Matrix &operator-=( const Matrix &other );
         Matrix &operator*=( const Matrix &other );
 
+        // Relational operator. C++ 2020 automatically defines operator!= in terms of operator==.
+        bool operator==( const Matrix &other ) const;
+
     private:
         index_type row_count;
         index_type column_count;
@@ -178,8 +181,8 @@ namespace vtsu {
     // =====================
 
     template<typename T>
-    Matrix<T>::Matrix( index_type row_count, index_type column_count ) :
-        row_count( row_count ), column_count( column_count ), elements( nullptr )
+    Matrix<T>::Matrix( index_type incoming_row_count, index_type incoming_column_count ) :
+        row_count( incoming_row_count ), column_count( incoming_column_count ), elements( nullptr )
     {
         if( row_count == 0 || column_count == 0 ) {
             throw InvalidSize( "Matrix must have non-zero size" );
@@ -193,7 +196,7 @@ namespace vtsu {
     template<typename T>
     Matrix<T>::~Matrix( )
     {
-        delete [] elements;
+        delete[] elements;
     }
 
 
@@ -251,6 +254,22 @@ namespace vtsu {
         return elements[row * column_count + column];
     }
 
+    template<typename T>
+    bool Matrix<T>::operator==( const Matrix &other ) const
+    {
+        if( row_count != other.row_count || column_count != other.column_count ) {
+            return false;
+        }
+
+        for( index_type i = 0; i < row_count; ++i ) {
+            for( index_type j = 0; j < column_count; ++j ) {
+                if( elements[i * column_count + j] != other.elements[i * column_count + j] ) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }
 
 #endif
