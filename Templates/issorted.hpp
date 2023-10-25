@@ -1,16 +1,21 @@
 
-#ifndef ISSORTED_HPP
-#define ISSORTED_HPP
+#ifndef VTSU_ISSORTED_HPP
+#define VTSU_ISSORTED_HPP
 
-template<typename ForwardIterator>
-bool is_sorted(ForwardIterator first, ForwardIterator last)
-{
+namespace vtsu {
 
-}
+    template<typename ForwardIterator>
+    bool is_sorted( ForwardIterator first, ForwardIterator last )
+    {
 
-template<typename ForwardIterator, typename Compare>
-bool is_sorted(ForwardIterator first, ForwardIterator last, Compare comp)
-{
+    }
+
+
+    template<typename ForwardIterator, typename Compare>
+    bool is_sorted( ForwardIterator first, ForwardIterator last, Compare comp )
+    {
+
+    }
 
 }
 

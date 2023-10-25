@@ -1,21 +1,24 @@
 
 #include <algorithm>
+#include <functional>   // Needed for std::less, std::greater, etc.
+#include <iostream>
 #include <vector>
 #include "issorted.hpp"
 
-using namespace std;
+// using namespace std;
 
 int main( )
 {
-    vector<int> v = { 5, 3, 8, 1, 2, 9, 0 };
+    std::vector<int> v{ 5, 3, 8, 6, 1, 4, 7, 2, 9, 0 };
 
-    if( is_sorted( v.begin( ), v.end( ) ) ) {
-        cout << "It didn't work!\n";
+    if( vtsu::is_sorted( v.begin( ), v.end( ) ) ) {
+        std::cout << "The original array is sorted (WRONG)!" << std::endl;
     }
 
-    sort( v.begin( ), v.end( ) );
+    // This sort is coming from <algorithm>.
+    std::sort( v.begin( ), v.end( ) );
 
-    if( is_sorted( v.begin( ), v.end( ) ) ) {
-        cout << "It worked!\n";
+    if( vtsu::is_sorted( v.begin( ), v.end( ) ) ) {
+        std::cout << "The array is now sorted!" << std::endl;
     }
 }
