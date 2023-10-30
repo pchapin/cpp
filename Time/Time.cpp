@@ -21,7 +21,8 @@ namespace vtsu {
 
     void Time::set( unsigned hours, unsigned minutes, unsigned seconds )
     {
-        // Compute the total number of seconds in the incoming time.
+        // Compute the total number of seconds in the incoming time. The type unsigned long is
+        // used here for portability to 16 bit platforms.
         unsigned long total = hours * 3600UL + minutes * 60UL + seconds;
 
         this->seconds = total % 60UL;
@@ -58,7 +59,7 @@ namespace vtsu {
         regex  date_matcher{ R"((\d+):(\d+):(\d+))" };
         smatch matches;
 
-        // Try to match the entire string. If the match files, set the Time object to 00:00:00.
+        // Try to match the entire string. If the match fails, set the Time object to 00:00:00.
         if( !regex_match( time_string, matches, date_matcher ) ) {
             hours = minutes = seconds = 0U;
             return;
@@ -98,22 +99,19 @@ namespace vtsu {
 
     Time Time::roll_forward_seconds( unsigned delta ) const
     {
-        // TODO: Finish me!
-        return Time( );
+        return Time( hours, minutes, seconds + delta );
     }
 
 
     Time Time::roll_forward_minutes( unsigned delta ) const
     {
-        // TODO: Finish me!
-        return Time( );
+        return Time( hours, minutes + delta, seconds );
     }
 
 
     Time Time::roll_forward_hours( unsigned delta ) const
     {
-        // TODO: Finish me!
-        return Time( );
+        return Time( hours + delta, minutes, seconds );
     }
 
 
@@ -122,9 +120,21 @@ namespace vtsu {
 
     int operator-( const Time &future, const Time &past )
     {
-        int result = 0;
-        // TODO: Finish me!
-        return result;
+        unsigned long future_seconds =
+            future.get_hours( ) * 3600UL +
+            future.get_minutes( ) * 60UL +
+            future.get_seconds( );
+        unsigned long past_seconds =
+            past.get_hours( ) * 3600UL +
+            past.get_minutes( ) * 60UL +
+            past.get_seconds( );
+
+        // It is important to cast before subtracting so that negative results don't invoke UB.
+        // These casts aren't portable to 16 bit platforms, but then again, neither is the
+        // return type of this function! The maximum possible difference between two times is
+        // 86,399 seconds, which can't be represented by 16 bit integers.
+        // TODO: Make this function portable to 16 bit platforms.
+        return static_cast<int>( future_seconds ) - static_cast<int>( past_seconds );
     }
 
 
@@ -136,11 +146,11 @@ namespace vtsu {
 
         // C++ does not allow nested functions, but it does allow *lambda expressions* which are
         // essentially unnamed functions. Here I define a lambda expression that prints a given
-        // fill character enough times to fill the given width. The value of 'i' starts at 10
-        // because the Date3 object itself is 10 characters wide and must also occupy the same
+        // fill character enough times to fill the given width. The value of 'i' starts at 8
+        // because the Time object itself is 8 characters wide and must also occupy the same
         // field.
         auto print_fill = []( ostream &output, char fill, int width ) -> void {
-            for( int i = 10; i < width; ++i ) {
+            for( int i = 8; i < width; ++i ) {
                 output << fill;
             }
         };
