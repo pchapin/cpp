@@ -92,7 +92,9 @@
         "__functional_base": "cpp",
         "__tree": "cpp",
         "queue": "cpp",
-        "stack": "cpp"
+        "stack": "cpp",
+        "charconv": "cpp",
+        "forward_list": "cpp"
     },
     "cSpell.words": [
         "BIGINTEGER"
