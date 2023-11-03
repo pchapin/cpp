@@ -25,6 +25,13 @@ namespace spica {
         //! An unsigned type used for measuring the size of the tree.
         using size_type = std::size_t;
 
+        class NotImplemented : public std::logic_error {
+        public:
+            NotImplemented( const std::string &message ) :
+                std::logic_error( message )
+            { }
+        };
+
         //! Default constructor.
         SplayTree( StrictWeakOrdering swo = StrictWeakOrdering( ) ) :
             root( NodePointer( ) ), compare( swo ), node_count( 0 )
@@ -69,6 +76,10 @@ namespace spica {
             NodePointer current;
         };  // End of iterator class.
 
+        iterator begin( ) const { return iterator( root ); }
+        iterator end( ) const { return iterator( ); }
+        // TODO: Implement reverse iterators.
+
         //! Insert
         std::pair<iterator, bool> insert( const T &value );
         template<typename InputIterator>
@@ -87,14 +98,19 @@ namespace spica {
         class InconsistentStructure : public std::logic_error {
         public:
             InconsistentStructure( const std::string &message ) :
-                std::logic_error( "Inconsistent SplayTree structure: " + message )
-                { }
+                std::logic_error( message )
+            { }
         };
         void check_structure( ) const;
 
         struct DumpItem {
             size_type depth;
             T data;
+
+            bool operator==( const DumpItem &other ) const
+            {
+                return depth == other.depth && data == other.data;
+            }
         };
         using DumpResult = std::vector<DumpItem>;
         DumpResult dump( ) const;
@@ -159,6 +175,7 @@ namespace spica {
         SplayTree<T, StrictWeakOrdering>::iterator::operator++( )
     {
         // Finish me!
+        throw NotImplemented( "iterator::operator++( )" );
     }
 
     template<typename T, typename StrictWeakOrdering>
@@ -175,6 +192,7 @@ namespace spica {
         SplayTree<T, StrictWeakOrdering>::iterator::operator--( )
     {
         // Finish me!
+        throw NotImplemented( "iterator::operator--( )" );
     }
 
     template<typename T, typename StrictWeakOrdering>
@@ -186,15 +204,60 @@ namespace spica {
         return saved;
     }
 
-    // Testing/Debugging
-    // -----------------
+    template<typename T, typename StrictWeakOrdering>
+    std::pair<typename SplayTree<T, StrictWeakOrdering>::iterator, bool>
+        SplayTree<T, StrictWeakOrdering>::insert( const T &value )
+    {
+        // Finish me!
+        throw NotImplemented( "insert( )" );
+        return { iterator( ), false };
+    }
 
     template<typename T, typename StrictWeakOrdering>
-    bool operator==( const typename SplayTree<T, StrictWeakOrdering>::DumpItem &lhs,
-                     const typename SplayTree<T, StrictWeakOrdering>::DumpItem &rhs )
+    template<typename InputIterator>
+        void SplayTree<T, StrictWeakOrdering>::insert( InputIterator first, InputIterator last )
     {
-        return lhs.depth == rhs.depth && lhs.data == rhs.data;
+        while( first != last ) {
+            insert( *first );
+            ++first;
+        }
     }
+
+    template<typename T, typename StrictWeakOrdering>
+    void SplayTree<T, StrictWeakOrdering>::insert( std::initializer_list<T> init_list )
+    {
+        insert( init_list.begin( ), init_list.end( ) );
+    }
+
+    template<typename T, typename StrictWeakOrdering>
+    typename SplayTree<T, StrictWeakOrdering>::iterator
+        SplayTree<T, StrictWeakOrdering>::find( const T &value )
+    {
+        // Finish me!
+        throw NotImplemented( "find( )" );
+        return iterator( );
+    }
+
+    template<typename T, typename StrictWeakOrdering>
+    typename SplayTree<T, StrictWeakOrdering>::size_type
+        SplayTree<T, StrictWeakOrdering>::erase( const T &value )
+    {
+        // DO NOT IMPLEMENT!
+        throw NotImplemented( "erase( )" );
+        return 0;
+    }
+
+    template<typename T, typename StrictWeakOrdering>
+    typename SplayTree<T, StrictWeakOrdering>::iterator
+        SplayTree<T, StrictWeakOrdering>::erase( iterator position )
+    {
+        // DO NOT IMPLEMENT!
+        throw NotImplemented( "erase( )" );
+        return iterator( );
+    }
+
+    // Testing/Debugging
+    // -----------------
 
     template<typename T, typename StrictWeakOrdering>
     void SplayTree<T, StrictWeakOrdering>::check_structure( ) const
@@ -202,7 +265,7 @@ namespace spica {
         if( root == nullptr && node_count == 0 ) return;
         if( root == nullptr && node_count != 0 )
             throw InconsistentStructure( "Non-zero node count with a null root" );
-        // The root cannot be null beyond this point.
+        // The root cannot be nullptr beyond this point.
 
         if( root->parent != nullptr )
             throw InconsistentStructure( "Root has a non-null parent" );
