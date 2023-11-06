@@ -21,6 +21,10 @@ namespace {
 
     void initializer_list_constructor_check( )
     {
+        std::cout << "Initializer list constructor check" << std::endl;
+
+        spica::SplayTree<int> tree1{ 5, 3, 7, 4, 6, 2, 8 };
+        tree1.check_structure( );
     }
 
     void insert_check( )
@@ -42,7 +46,7 @@ namespace {
         };
 
         spica::SplayTree<int> tree1;
-        for( int i = 0; i < test_data.size( ); ++i ) {
+        for( std::vector<int>::size_type i = 0; i < test_data.size( ); ++i ) {
             tree1.insert( test_data[i] );
             tree1.check_structure( );
 
@@ -85,7 +89,7 @@ namespace {
         }
 
         // Look for things.
-        for(int i = 0; i < find_data.size( ); ++i ) {
+        for( std::vector<int>::size_type i = 0; i < find_data.size( ); ++i ) {
             auto find_result = tree1.find( find_data[i] );
             if( *find_result != find_data[i] ) {
                 std::cout << "*** Find failed at step " << i << ":" << std::endl;

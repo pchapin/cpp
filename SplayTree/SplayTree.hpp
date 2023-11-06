@@ -53,7 +53,7 @@ namespace spica {
         SplayTree &operator=( SplayTree &&other );
 
         //! Initializer list constructor.
-        SplayTree( std::initializer_list<T> init_list );
+        SplayTree( std::initializer_list<T> init_list, StrictWeakOrdering swo = StrictWeakOrdering( ) );
 
         //! Iterator class.
         class iterator {
@@ -163,7 +163,8 @@ namespace spica {
     }
 
     template<typename T, typename StrictWeakOrdering>
-    SplayTree<T, StrictWeakOrdering>::SplayTree( std::initializer_list<T> init_list )
+    SplayTree<T, StrictWeakOrdering>::SplayTree( std::initializer_list<T> init_list, StrictWeakOrdering swo ) :
+        root( NodePointer( ) ), compare( swo ), node_count( 0 )
     {
         for( const auto &item : init_list ) {
             insert( item );
