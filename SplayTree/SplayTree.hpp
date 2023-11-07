@@ -24,8 +24,14 @@ namespace spica {
         using WeakNodePointer = std::weak_ptr<Node>;
 
     public:
-        //! An unsigned type used for measuring the size of the tree.
-        using size_type = std::size_t;
+        //! The usual type aliases.
+        using size_type       = std::size_t;
+        using difference_type = std::ptrdiff_t;
+        using value_type      = T;
+        using reference       = const T &;
+        using const_reference = const T &;
+        using pointer         = const T *;
+        using const_pointer   = const T *;
 
         //! An exception class thrown if a method is not implemented.
         class NotImplemented : public std::logic_error {
@@ -61,8 +67,19 @@ namespace spica {
         //! Iterator class.
         class iterator {
         public:
-            iterator( ) : current( NodePointer( ) ) { }
-            iterator( NodePointer ptr ) : current( ptr ) { }
+            // The usual type aliases.
+            using iterator_category = std::bidirectional_iterator_tag;
+            using value_type        = T;
+            using difference_type   = std::ptrdiff_t;
+            using pointer           = const T *;
+            using reference         = const T &;
+
+            iterator( const SplayTree *t ) :
+                tree( t ), current( NodePointer( ) )
+                { }
+            iterator( const SplayTree *t, NodePointer ptr ) :
+                tree( t ), current( ptr )
+                { }
             
             const T &operator*( ) const { return current->data; }
             const T *operator->( ) const { return &current->data; }
@@ -76,12 +93,12 @@ namespace spica {
             bool operator!=( const iterator &other ) const { return current != other.current; }
 
         private:
+            const SplayTree  *tree;      // This is needed so end( ) is decrementable.
             NodePointer current;
         };  // End of iterator class.
 
-        iterator begin( ) const { return iterator( root ); }
-        iterator end( ) const { return iterator( ); }
-        // TODO: Implement reverse iterators.
+        iterator begin( ) const;
+        iterator end( ) const { return iterator( this ); }
 
         //! Insert
         std::pair<iterator, bool> insert( const T &value );
@@ -144,13 +161,16 @@ namespace spica {
 
         // The rotations take a pointer to the node initially at the root of the subtree. They
         // rotate that node down and toward the direction indicated by the name of the function.
-        // The pointer to the new root of the subtree is returned.
         //
         void rotate_left( NodePointer x );
         void rotate_right( NodePointer y );
 
         // Starting at node x, splay the tree until x is the root.
         void splay( NodePointer x );
+
+        // Find the node with the minimum (maximum) value in the subtree rooted at subtree_root.
+        static NodePointer minimum_node( NodePointer subtree_root );
+        static NodePointer maximum_node( NodePointer subtree_root );
 
         // Testing/Debugging
         // -----------------
@@ -195,8 +215,20 @@ namespace spica {
     typename SplayTree<T, StrictWeakOrdering>::iterator &
         SplayTree<T, StrictWeakOrdering>::iterator::operator++( )
     {
-        // Finish me!
-        throw NotImplemented( "iterator::operator++( )" );
+        if( current != nullptr ) {
+            if( current->right != nullptr ) {
+                current = minimum_node( current->right );
+            }
+            else {
+                NodePointer backtrack = current->parent.lock( );
+                while( backtrack != nullptr && current == backtrack->right ) {
+                    current = backtrack;
+                    backtrack = backtrack->parent.lock( );
+                }
+                current = backtrack;
+            }
+        }
+        return *this;
     }
 
     template<typename T, typename StrictWeakOrdering>
@@ -212,8 +244,28 @@ namespace spica {
     typename SplayTree<T, StrictWeakOrdering>::iterator &
         SplayTree<T, StrictWeakOrdering>::iterator::operator--( )
     {
-        // Finish me!
-        throw NotImplemented( "iterator::operator--( )" );
+        // If we are an off-the-end pointer...
+        if( current == nullptr ) {
+            // This is why iterators need a pointer to the tree. Otherwise they can't find the
+            // tree in the case when they are pointing "off-the-end" and current is nullptr.
+            if( tree->root != nullptr)
+                current = maximum_node( tree->root );
+        }
+        // Otherwise...
+        else {
+            if( current->left != nullptr ) {
+                current = maximum_node( current->left );
+            }
+            else {
+                NodePointer backtrack = current->parent.lock( );
+                while( backtrack != nullptr && current == backtrack->left ) {
+                    current = backtrack;
+                    backtrack = backtrack->parent.lock( );
+                }
+                current = backtrack;
+            }
+        }
+        return *this;
     }
 
     template<typename T, typename StrictWeakOrdering>
@@ -226,6 +278,14 @@ namespace spica {
     }
 
     template<typename T, typename StrictWeakOrdering>
+    typename SplayTree<T, StrictWeakOrdering>::iterator
+        SplayTree<T, StrictWeakOrdering>::begin( ) const
+    {
+        if( root == nullptr ) return end( );
+        return iterator( this, minimum_node( root ) );
+    }
+
+    template<typename T, typename StrictWeakOrdering>
     std::pair<typename SplayTree<T, StrictWeakOrdering>::iterator, bool>
         SplayTree<T, StrictWeakOrdering>::insert( const T &value )
     {
@@ -233,7 +293,7 @@ namespace spica {
         if( root == nullptr ) {
             root = new_node;
             node_count++;
-            return { iterator( root ), true };
+            return { iterator( this, root ), true };
         }
 
         NodePointer current = root;
@@ -244,7 +304,7 @@ namespace spica {
                     new_node->parent = current;
                     node_count++;
                     splay( new_node );
-                    return { iterator( new_node ), true };
+                    return { iterator( this, new_node ), true };
                 }
                 else {
                     current = current->left;
@@ -256,7 +316,7 @@ namespace spica {
                     new_node->parent = current;
                     node_count++;
                     splay( new_node );
-                    return { iterator( new_node ), true };
+                    return { iterator( this, new_node ), true };
                 }
                 else {
                     current = current->right;
@@ -264,7 +324,7 @@ namespace spica {
             }
             else {
                 // The value is already in the tree.
-                return { iterator( current ), false };
+                return { iterator( this, current ), false };
             }
         }
         assert( false );  // Should never get here.
@@ -301,10 +361,10 @@ namespace spica {
             else {
                 // We found it!
                 splay( current );
-                return iterator( current );
+                return iterator( this, current );
             }
         }
-        return iterator(  );
+        return iterator( this );
     }
 
     template<typename T, typename StrictWeakOrdering>
@@ -441,6 +501,32 @@ namespace spica {
                 }
             }
         }
+    }
+
+    template<typename T, typename StrictWeakOrdering>
+    typename SplayTree<T, StrictWeakOrdering>::NodePointer
+        SplayTree<T, StrictWeakOrdering>::minimum_node( NodePointer subtree_root )
+    {
+        assert( subtree_root != nullptr );
+
+        NodePointer current = subtree_root;
+        while( current->left != nullptr ) {
+            current = current->left;
+        }
+        return current;
+    }
+
+    template<typename T, typename StrictWeakOrdering>
+    typename SplayTree<T, StrictWeakOrdering>::NodePointer
+        SplayTree<T, StrictWeakOrdering>::maximum_node( NodePointer subtree_root )
+    {
+        assert( subtree_root != nullptr );
+
+        NodePointer current = subtree_root;
+        while( current->right != nullptr ) {
+            current = current->right;
+        }
+        return current;
     }
 
     // Testing/Debugging

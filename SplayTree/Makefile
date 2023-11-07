@@ -9,9 +9,9 @@ LINKFLAGS=-g
 
 # Program Sources
 #################
-SOURCES=SplayTree_demo.cpp
+SOURCES=SplayTree_test.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
-PROG=SplayTree_demo
+PROG=SplayTree_test
 
 # Main Target
 #############
@@ -27,7 +27,7 @@ $(PROG):	$(OBJECTS)
 # File Dependencies
 ###################
 
-SplayTree_demo.o:	SplayTree_demo.cpp SplayTree.hpp
+SplayTree_test.o:	SplayTree_test.cpp SplayTree.hpp
 
 # Additional Rules
 ##################

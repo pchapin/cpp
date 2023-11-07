@@ -6,6 +6,8 @@
 #include <cstdlib>
 #include <iomanip>
 #include <iostream>
+#include <iterator>
+#include <ranges>
 #include <vector>
 #include "SplayTree.hpp"
 
@@ -120,15 +122,20 @@ namespace {
 
     void erase_check( )
     {
+        // Erase is not implemented yet!
     }
 
     void iterator_check( )
     {
         std::cout << "Iterator check" << std::endl;
 
+        // Notice that the test data has two 4s in it. This will check that inserting a
+        // duplicate value does not cause problems (specifically, it should be ignored).
+        //
         std::vector<int> test_data = { 4, 6, 3, 1, 4, 2, 8, 5, 7 };
         std::vector<int> result;
         std::vector<int> expected_result = { 1, 2, 3, 4, 5, 6, 7, 8 };
+        std::vector<int> expected_result_reverse = { 8, 7, 6, 5, 4, 3, 2, 1 };
         spica::SplayTree<int> tree1;
 
         // Populate the tree.
@@ -144,8 +151,21 @@ namespace {
             std::cout << "*** Iterator check failed" << std::endl;
             std::exit( EXIT_FAILURE );
         }
+        result.clear( );
 
-        // TODO: Exercise the iterator decrement operator.
+        // Now check the iterator decrement operation using reverse iterators and C++20 ranges.
+        // (for fun!)
+        //
+        auto rbegin = std::make_reverse_iterator( tree1.end( ) );
+        auto rend = std::make_reverse_iterator( tree1.begin( ) );
+        std::ranges::subrange reverse_range( rbegin, rend );
+        for( int item : reverse_range ) {
+            result.push_back( item );
+        }
+        if( result != expected_result_reverse ) {
+            std::cout << "*** Reverse iterator check failed" << std::endl;
+            std::exit( EXIT_FAILURE );
+        }
     }
 
 }
