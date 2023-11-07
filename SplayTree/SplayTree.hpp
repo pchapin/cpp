@@ -6,6 +6,7 @@
 #ifndef SPICA_SPLAYTREE_HPP
 #define SPICA_SPLAYTREE_HPP
 
+#include <cassert>
 #include <cstddef>
 #include <functional>
 #include <initializer_list>
@@ -20,11 +21,13 @@ namespace spica {
     private:
         struct Node;
         using NodePointer = std::shared_ptr<Node>;
+        using WeakNodePointer = std::weak_ptr<Node>;
 
     public:
         //! An unsigned type used for measuring the size of the tree.
         using size_type = std::size_t;
 
+        //! An exception class thrown if a method is not implemented.
         class NotImplemented : public std::logic_error {
         public:
             NotImplemented( const std::string &message ) :
@@ -95,6 +98,11 @@ namespace spica {
 
         // Testing/Debugging
         // -----------------
+
+        //! An exception class thrown `check_structure( )` detects a problem with the tree structure.
+        /*!
+         * If this occurs, the code is buggy and undefined behavior is likely.
+         */
         class InconsistentStructure : public std::logic_error {
         public:
             InconsistentStructure( const std::string &message ) :
@@ -118,11 +126,13 @@ namespace spica {
     private:
         struct Node {
             T data;
-            NodePointer parent;
+            WeakNodePointer parent;  // A weak pointer to break reference cycles.
             NodePointer left;
             NodePointer right;
 
-            Node( const T &d, NodePointer p = NodePointer( ), NodePointer l = NodePointer( ),
+            Node( const T &d,
+                  WeakNodePointer p = WeakNodePointer( ),
+                  NodePointer l = NodePointer( ),
                   NodePointer r = NodePointer( ) ) :
                 data( d ), parent( p ), left( l ), right( r )
             { }
@@ -131,6 +141,16 @@ namespace spica {
         NodePointer root;
         StrictWeakOrdering compare;
         size_type node_count;
+
+        // The rotations take a pointer to the node initially at the root of the subtree. They
+        // rotate that node down and toward the direction indicated by the name of the function.
+        // The pointer to the new root of the subtree is returned.
+        //
+        void rotate_left( NodePointer x );
+        void rotate_right( NodePointer y );
+
+        // Starting at node x, splay the tree until x is the root.
+        void splay( NodePointer x );
 
         // Testing/Debugging
         // -----------------
@@ -209,9 +229,45 @@ namespace spica {
     std::pair<typename SplayTree<T, StrictWeakOrdering>::iterator, bool>
         SplayTree<T, StrictWeakOrdering>::insert( const T &value )
     {
-        // Finish me!
-        throw NotImplemented( "insert( )" );
-        return { iterator( ), false };
+        NodePointer new_node = std::make_shared<Node>( value );
+        if( root == nullptr ) {
+            root = new_node;
+            node_count++;
+            return { iterator( root ), true };
+        }
+
+        NodePointer current = root;
+        while( true ) {
+            if( compare( value, current->data ) ) {
+                if( current->left == nullptr ) {
+                    current->left = new_node;
+                    new_node->parent = current;
+                    node_count++;
+                    splay( new_node );
+                    return { iterator( new_node ), true };
+                }
+                else {
+                    current = current->left;
+                }
+            }
+            else if( compare( current->data, value ) ) {
+                if( current->right == nullptr ) {
+                    current->right = new_node;
+                    new_node->parent = current;
+                    node_count++;
+                    splay( new_node );
+                    return { iterator( new_node ), true };
+                }
+                else {
+                    current = current->right;
+                }
+            }
+            else {
+                // The value is already in the tree.
+                return { iterator( current ), false };
+            }
+        }
+        assert( false );  // Should never get here.
     }
 
     template<typename T, typename StrictWeakOrdering>
@@ -257,6 +313,124 @@ namespace spica {
         return iterator( );
     }
 
+    // Private Methods
+    // ---------------
+
+    template<typename T, typename StrictWeakOrdering>
+    void SplayTree<T, StrictWeakOrdering>::rotate_left( NodePointer x )
+    {
+        assert( x != nullptr );
+
+        // Turn y's left subtree into x's right subtree
+        NodePointer y = x->right;
+        x->right = y->left;
+
+        // If y's left subtree is not empty, set its parent to x.
+        if( y->left != nullptr ) {
+            y->left->parent = x;
+        }
+
+        // Link x's parent to y.
+        y->parent = x->parent;
+
+        // If x was the root...
+        if( x->parent.lock( ) == nullptr ) {
+            root = y;
+        }
+        // ... otherwise fix x's parent to point at y.
+        else if( x == x->parent.lock( )->left ) {
+            x->parent.lock( )->left = y;
+        }
+        else {
+            x->parent.lock( )->right = y;
+        }
+
+        // Attach x as the left child of y.
+        y->left = x;
+        x->parent = y;
+    }
+
+    template<typename T, typename StrictWeakOrdering>
+    void SplayTree<T, StrictWeakOrdering>::rotate_right( NodePointer y )
+    {
+        assert( y != nullptr );
+
+        // Turn x's right subtree into y's left subtree
+        NodePointer x = y->left;
+        y->left = x->right;
+
+        // If x's right subtree is not empty, set its parent to y.
+        if( x->right != nullptr ) {
+            x->right->parent = y;
+        }
+
+        // Link y's parent to x.
+        x->parent = y->parent;
+
+        // If y was the root...
+        if( y->parent.lock( ) == nullptr ) {
+            root = x;
+        }
+        // ... otherwise fix y's parent to point at x.
+        else if( y == y->parent.lock( )->left ) {
+            y->parent.lock( )->left = x;
+        }
+        else {
+            y->parent.lock( )->right = x;
+        }
+
+        // Attach y as the right child of x.
+        x->right = y;
+        y->parent = x;
+    }
+
+    template<typename T, typename StrictWeakOrdering>
+    void SplayTree<T, StrictWeakOrdering>::splay( NodePointer x )
+    {
+        assert( x != nullptr );
+
+        while( x->parent.lock( ) != nullptr ) {
+            NodePointer x_parent = x->parent.lock( );
+            NodePointer x_grandparent = x_parent->parent.lock( );
+
+            // If x's parent is the root of the tree...
+            if( x_grandparent == nullptr ) {
+                if( x == x_parent->left ) {
+                    rotate_right( x_parent );
+                }
+                else {
+                    rotate_left( x_parent );
+                }
+            }
+            // If x is the left child of its parent...
+            else if( x == x_parent->left ) {
+                // ... and its parent is the left child of its grandparent (Zig-Zig)...
+                if( x_parent == x_grandparent->left ) {
+                    rotate_right( x_grandparent );
+                    rotate_right( x_parent );
+                }
+                // ... and its parent is the right child of its grandparent (Zig-Zag)...
+                else {
+                    rotate_right( x_parent );
+                    rotate_left( x_parent );
+                }
+            }
+            // Otherwise x is the right child of its parent...
+            else {
+                // ... and if its parent is the left child of its grandparent (Zig-Zag)...
+                if( x_parent == x_grandparent->left ) {
+                    rotate_left( x_parent );
+                    rotate_right( x_parent );
+                }
+                // ... and if its parent is the right child of its grandparent (Zig-Zig)...
+                else {
+                    rotate_left( x_grandparent );
+                    rotate_left( x_parent );
+                }
+            }
+        }
+    }
+
     // Testing/Debugging
     // -----------------
 
@@ -268,7 +442,7 @@ namespace spica {
             throw InconsistentStructure( "Non-zero node count with a null root" );
         // The root cannot be nullptr beyond this point.
 
-        if( root->parent != nullptr )
+        if( root->parent.lock( ) != nullptr )
             throw InconsistentStructure( "Root has a non-null parent" );
 
         // Explore the tree structure and count the number of nodes.
@@ -297,7 +471,7 @@ namespace spica {
                 if( !compare( p->left->data, p->data ) ) {
                     throw InconsistentStructure( "Left child out of order" );
                 }
-                if( p->left->parent != p ) {
+                if( p->left->parent.lock( ) != p ) {
                     throw InconsistentStructure( "Left child has bad parent" );
                 }
                 subtree_count += traverse_check( p->left );
@@ -305,10 +479,10 @@ namespace spica {
             if( p->right != nullptr ) {
                 // See comment above. A mirror issue exists here.
                 //
-                if( !compare( p->data, p->left->data ) ) {
+                if( !compare( p->data, p->right->data ) ) {
                     throw InconsistentStructure( "Right child out of order" );
                 }
-                if( p->right->parent != p ) {
+                if( p->right->parent.lock( ) != p ) {
                     throw InconsistentStructure( "Right child has bad parent" );
                 }
                 subtree_count += traverse_check( p->right );

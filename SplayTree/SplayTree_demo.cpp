@@ -27,6 +27,31 @@ namespace {
         tree1.check_structure( );
     }
 
+    // This helper function displays information about a failed dump check and then exits.
+    void verify_dump(
+        const spica::SplayTree<int> &tree,  // The tree to dump.
+        int step,                           // The step number of the test.
+        const spica::SplayTree<int>::DumpResult &expected_dump )
+    {
+        spica::SplayTree<int>::DumpResult result = tree.dump( );
+        if( result != expected_dump ) {
+            std::cout << "*** Dump result mismatch at step " << step << ": " << std::endl;
+            std::cout << "  Expected:" << std::endl;
+            std::cout << "    ";
+            for( const auto &dump_item : expected_dump ) {
+                std::cout << "{ " << dump_item.depth << ", " << dump_item.data << " }, ";
+            }
+            std::cout << std::endl;
+            std::cout << "  Got:" << std::endl;
+            std::cout << "    ";
+            for( const auto &dump_item : result ) {
+                std::cout << "{ " << dump_item.depth << ", " << dump_item.data << " }, ";
+            }
+            std::cout << std::endl;
+            std::exit( EXIT_FAILURE );
+        }
+    }
+
     void insert_check( )
     {
         std::cout << "Insert check" << std::endl;
@@ -49,23 +74,7 @@ namespace {
         for( std::vector<int>::size_type i = 0; i < test_data.size( ); ++i ) {
             tree1.insert( test_data[i] );
             tree1.check_structure( );
-
-            // TODO: Make this a separate function to factor it out of insert_check and find_check.
-            spica::SplayTree<int>::DumpResult result = tree1.dump( );
-            if( result != expected_dump_results[i] ) {
-                std::cout << "*** Dump result mismatch at step " << i << ":" << std::endl;
-                std::cout << "  Expected:" << std::endl;
-                for( const auto &dump_item : expected_dump_results[i] ) {
-                    std::cout << "    " << "{ " << dump_item.depth << ", " << dump_item.data << " }, ";
-                }
-                std::cout << std::endl;
-                std::cout << "  Got:" << std::endl;
-                for( const auto &dump_item : result ) {
-                    std::cout << "    " << "{ " << dump_item.depth << ", " << dump_item.data << " }, ";
-                }
-                std::cout << std::endl;
-                std::exit( EXIT_FAILURE );
-            }
+            verify_dump( tree1, i, expected_dump_results[i] );
         }
     }
 
@@ -98,22 +107,7 @@ namespace {
                 std::exit( EXIT_FAILURE );
             }
             tree1.check_structure( );
-
-            spica::SplayTree<int>::DumpResult result = tree1.dump( );
-            if( result != expected_dump_results[i] ) {
-                std::cout << "*** Dump result mismatch at step " << i << ":" << std::endl;
-                std::cout << "  Expected:" << std::endl;
-                for( const auto &dump_item : expected_dump_results[i] ) {
-                    std::cout << "    " << "{ " << dump_item.depth << ", " << dump_item.data << " }, ";
-                }
-                std::cout << std::endl;
-                std::cout << "  Got:" << std::endl;
-                for( const auto &dump_item : result ) {
-                    std::cout << "    " << "{ " << dump_item.depth << ", " << dump_item.data << " }, ";
-                }
-                std::cout << std::endl;
-                std::exit( EXIT_FAILURE );
-            }
+            verify_dump( tree1, i, expected_dump_results[i] );
         }
 
         // Try to find a non-existant item.
