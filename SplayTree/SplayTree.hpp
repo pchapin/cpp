@@ -290,9 +290,21 @@ namespace spica {
     typename SplayTree<T, StrictWeakOrdering>::iterator
         SplayTree<T, StrictWeakOrdering>::find( const T &value )
     {
-        // Finish me!
-        throw NotImplemented( "find( )" );
-        return iterator( );
+        NodePointer current = root;
+        while( current != nullptr ) {
+            if( compare( value, current->data ) ) {
+                current = current->left;
+            }
+            else if( compare( current->data, value ) ) {
+                current = current->right;
+            }
+            else {
+                // We found it!
+                splay( current );
+                return iterator( current );
+            }
+        }
+        return iterator(  );
     }
 
     template<typename T, typename StrictWeakOrdering>
@@ -412,7 +424,7 @@ namespace spica {
                 // ... and its parent is the right child of its grandparent (Zig-Zag)...
                 else {
                     rotate_right( x_parent );
-                    rotate_left( x_parent );
+                    rotate_left( x->parent.lock( ) );  // Look up the new parent!
                 }
             }
             // Otherwise x is the right child of its parent...
@@ -420,7 +432,7 @@ namespace spica {
                 // ... and if its parent is the left child of its grandparent (Zig-Zag)...
                 if( x_parent == x_grandparent->left ) {
                     rotate_left( x_parent );
-                    rotate_right( x_parent );
+                    rotate_right( x->parent.lock( ) );  // Look up the new parent!
                 }
                 // ... and if its parent is the right child of its grandparent (Zig-Zig)...
                 else {
