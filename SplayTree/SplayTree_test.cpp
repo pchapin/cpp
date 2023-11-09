@@ -1,4 +1,4 @@
-/*! \file   Matrix.hpp
+/*! \file   SplayTree_test.hpp
  *  \brief  A program that demonstrates SplayTrees.
  *  \author Peter Chapin <peter.chapin@vermontstate.edu>
  */
@@ -7,7 +7,6 @@
 #include <iomanip>
 #include <iostream>
 #include <iterator>
-#include <ranges>
 #include <vector>
 #include "SplayTree.hpp"
 
@@ -139,29 +138,25 @@ namespace {
         spica::SplayTree<int> tree1;
 
         // Populate the tree.
-        for( int test_item : test_data ) {
-            tree1.insert( test_item );
-        }
+        tree1.insert( test_data.begin( ), test_data.end( ) );
 
         // This exercises the begin, end, and the iterator increment operator.
         for( int item : tree1 ) {
             result.push_back( item );
         }
+
+        // Check the result.
         if( result != expected_result ) {
             std::cout << "*** Iterator check failed" << std::endl;
             std::exit( EXIT_FAILURE );
         }
         result.clear( );
 
-        // Now check the iterator decrement operation using reverse iterators and C++20 ranges.
-        // (for fun!)
-        //
-        auto rbegin = std::make_reverse_iterator( tree1.end( ) );
-        auto rend = std::make_reverse_iterator( tree1.begin( ) );
-        std::ranges::subrange reverse_range( rbegin, rend );
-        for( int item : reverse_range ) {
-            result.push_back( item );
-        }
+        // Now check the iterator decrement operation using reverse iterators (for fun!)
+        auto r1 = std::make_reverse_iterator( tree1.end( ) );
+        auto r2 = std::make_reverse_iterator( tree1.begin( ) );
+        result.insert( result.begin( ), r1, r2 );
+
         if( result != expected_result_reverse ) {
             std::cout << "*** Reverse iterator check failed" << std::endl;
             std::exit( EXIT_FAILURE );
