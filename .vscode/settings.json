@@ -97,6 +97,7 @@
         "forward_list": "cpp"
     },
     "cSpell.words": [
-        "BIGINTEGER"
+        "BIGINTEGER",
+        "tock"
     ]
 }

@@ -5,15 +5,15 @@
 # General Flags
 ###############
 CXX=g++
-CXXFLAGS=-std=c++14 -Wall -pthread -c -O
-LINK=g++ -pthread
+CXXFLAGS=-std=c++20 -Wall -c -O
+LINK=g++
 LINKFLAGS=
 
 # Program Sources
 #################
-SOURCES=Thread.cpp
+SOURCES=Thread_demo.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
-PROG=Thread
+PROG=Thread_demo
 
 # Implicit Rules
 ################
@@ -33,7 +33,7 @@ $(PROG):	$(OBJECTS)
 # File Dependencies
 ###################
 
-main.o:	main.cpp
+Thread_demo.o:	Thread_demo.cpp
 
 # Additional Rules
 ##################

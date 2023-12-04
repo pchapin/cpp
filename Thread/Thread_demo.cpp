@@ -1,18 +1,18 @@
 /*! \file    main.cpp
  *  \brief   Sample program to illustrate basic usage of C++ 2011 threads.
- *  \author  Peter C. Chapin <pchapin@vtc.edu>
+ *  \author  Peter Chapin <pchapin@vermontstate.edu>
  */
 
 #include <chrono>
-#include <cmath>  // C++'s version of C's math.h
+#include <cmath>
 #include <iostream>
 #include <mutex>
 #include <thread>
 
-using namespace std;
+//using namespace std;
 
 // Lock associated with shared resource (the console in this case).
-mutex console_mutex;
+std::mutex console_mutex;
 
 // This class is "callable" because it contains an operator( ). Its state can be used as the
 // thread return value. Using a struct is convenient since the data members are already public.
@@ -25,67 +25,69 @@ struct SquareRoot {
 void SquareRoot::operator( )( double value )
 {
     // Imagine a much more complicated computation. Store the result in the object's members.
-    result = sqrt( value );
+    result = std::sqrt( value );
 }
 
 
-void output_named_integer( const string &name, const int value )
+void output_named_integer( const std::string &name, const int value )
 {
-    // This is not exception safe. If an exception in thrown while outputting the result, the
-    // mutex is not unlocked.
+    // The commented code is not exception safe. If an exception in thrown while outputting the
+    // result, the mutex is not unlocked.
     //
     //console_mutex.lock( );
     //cout << name << value << endl;
     //console_mutex.unlock( );
 
     // The destructor of the lock_guard will release the mutex.
-    lock_guard<mutex> console_guard( console_mutex );
-    cout << name << value << endl;
+    std::lock_guard<std::mutex> console_guard( console_mutex );
+    std::cout << name << value << std::endl;
 }
 
-void f( int tick_count )
+void do_tick( int tick_count )
 {
-    using namespace chrono_literals;
+    using namespace std::chrono_literals;
 
     for( int i = 1; i <= tick_count; ++i ) {
         output_named_integer( "Tick #", i );
         // Absolute sleep. Thread sleeps until the indicated time.
-        this_thread::sleep_until( chrono::high_resolution_clock::now( ) + 1s );
+        std::this_thread::sleep_until( std::chrono::high_resolution_clock::now( ) + 1s );
     }
 }
 
-void g( int tock_count )
+void do_tock( int tock_count )
 {
-    using namespace chrono_literals;
+    using namespace std::chrono_literals;
     
     for( int i = 1; i <= tock_count; ++i ) {
         output_named_integer( "Tock #", i );
         // Relative sleep. Thread sleeps for the indicated interval.
-        this_thread::sleep_for( 2s );
+        std::this_thread::sleep_for( 2s );
     }
 }
 
 // Demonstrate returning a thread from a function.
-thread make_thread( )
+std::thread make_thread( )
 {
     // Imagine that the thread arguments are complicated to compute.
-    return thread( f, 10 );
+    return std::thread( do_tick, 10 );
 }
 
 int main( )
 {
     SquareRoot root_computer;
 
-    thread t1 = make_thread( );
-    thread t2( g, 5 );
-    thread t3( ref( root_computer ), 2.0 );
+    std::thread t1 = make_thread( );   // Does Tick 10 times (1 second apart)
+    std::thread t2( do_tock, 5 );      // Does Tock 5 times (2 seconds apart)
+    std::thread t3( std::ref( root_computer ), 2.0 );
 
-    // Do other things while the threads work...
+    // Do other things here while the threads work.
+
+    // Wait for the threads to finish.
     t1.join( );
     t2.join( );
     t3.join( );
 
-    // Print out the results of the square root computation.
-    cout << root_computer.result << endl;
+    // Print the results of the square root computation.
+    std::cout << root_computer.result << std::endl;
     return 0;
 }
