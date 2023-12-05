@@ -94,7 +94,9 @@
         "queue": "cpp",
         "stack": "cpp",
         "charconv": "cpp",
-        "forward_list": "cpp"
+        "forward_list": "cpp",
+        "future": "cpp",
+        "cinttypes": "cpp"
     },
     "cSpell.words": [
         "BIGINTEGER",

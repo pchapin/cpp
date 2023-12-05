@@ -1,4 +1,4 @@
-/*! \file    main.cpp
+/*! \file    Thread_demo.cpp
  *  \brief   Sample program to illustrate basic usage of C++ 2011 threads.
  *  \author  Peter Chapin <pchapin@vermontstate.edu>
  */
@@ -8,8 +8,6 @@
 #include <iostream>
 #include <mutex>
 #include <thread>
-
-//using namespace std;
 
 // Lock associated with shared resource (the console in this case).
 std::mutex console_mutex;
