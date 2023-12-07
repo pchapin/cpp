@@ -194,13 +194,6 @@ namespace vtsu {
 
 
     template<typename T>
-    Matrix<T>::~Matrix( )
-    {
-        delete[] elements;
-    }
-
-
-    template<typename T>
     Matrix<T>::Matrix( std::initializer_list<std::initializer_list<T>> init_list ) :
         row_count( init_list.size( ) ), column_count( 0 ), elements( nullptr )
     {
@@ -236,6 +229,71 @@ namespace vtsu {
 
 
     template<typename T>
+    Matrix<T>::~Matrix( )
+    {
+        delete[] elements;
+    }
+
+
+    template<typename T>
+    Matrix<T>::Matrix( const Matrix &other ) :
+        row_count( other.row_count ), column_count( other.column_count ), elements( nullptr )
+    {
+        elements = new T[row_count * column_count];
+        std::copy( other.elements, other.elements + row_count * column_count, elements );
+    }
+
+
+    template<typename T>
+    Matrix<T> &Matrix<T>::operator=( const Matrix &other )
+    {
+        if( this != &other ) {
+            // Try the allocation first. Note that it is theoretically possible for there to be
+            // an exception thrown during the std::copy if the type T is something complicated.
+            // If that happens, we will leak memory. A std::unique_ptr would be a better choice
+            // here.
+            //
+            T *temp_elements = new T[other.row_count * other.column_count];
+            std::copy( other.elements, other.elements + other.row_count * other.column_count, temp_elements );
+
+            // If the above happened without exception, we can commit to the new value.
+            delete [] elements;
+            elements = temp_elements;
+            row_count = other.row_count;
+            column_count = other.column_count;
+        }
+        return *this;
+    }
+
+
+    template<typename T>
+    Matrix<T>::Matrix( Matrix &&other ) :
+        row_count( other.row_count ), column_count( other.column_count ), elements( other.elements )
+    {
+        other.elements = nullptr;
+        other.row_count = 0;
+        other.column_count = 0;
+    }
+
+
+    template<typename T>
+    Matrix<T> &Matrix<T>::operator=( Matrix &&other )
+    {
+        if( this != &other ) {
+            delete [] elements;
+            elements = other.elements;
+            row_count = other.row_count;
+            column_count = other.column_count;
+
+            other.elements = nullptr;
+            other.row_count = 0;
+            other.column_count = 0;
+        }
+        return *this;
+    }
+
+
+    template<typename T>
     T Matrix<T>::operator()( index_type row, index_type column ) const
     {
         if( row >= row_count || column >= column_count ) {
@@ -253,6 +311,65 @@ namespace vtsu {
         }
         return elements[row * column_count + column];
     }
+
+
+    template<typename T>
+    Matrix<T> &Matrix<T>::operator+=( const Matrix &other )
+    {
+        if( row_count != other.row_count || column_count != other.column_count ) {
+            throw InvalidSize( "Matrix dimensions must match in addition" );
+        }
+
+        for( index_type i = 0; i < row_count; ++i ) {
+            for( index_type j = 0; j < column_count; ++j ) {
+                elements[i * column_count + j] += other.elements[i * column_count + j];
+            }
+        }
+        return *this;
+    }
+
+
+    template<typename T>
+    Matrix<T> &Matrix<T>::operator-=( const Matrix &other )
+    {
+        if( row_count != other.row_count || column_count != other.column_count ) {
+            throw InvalidSize( "Matrix dimensions must match in subtraction" );
+        }
+
+        for( index_type i = 0; i < row_count; ++i ) {
+            for( index_type j = 0; j < column_count; ++j ) {
+                elements[i * column_count + j] -= other.elements[i * column_count + j];
+            }
+        }
+        return *this;
+    }
+
+
+    template<typename T>
+    Matrix<T> &Matrix<T>::operator*=( const Matrix &other )
+    {
+        if( column_count != other.row_count ) {
+            throw InvalidSize( "Incompatible Matrix dimensions in multiplication" );
+        }
+
+        // Create a temporary matrix to hold the result.
+        Matrix<T> temp{ row_count, other.column_count };
+
+        // Compute the result.
+        for( index_type i = 0; i < row_count; ++i ) {
+            for( index_type j = 0; j < other.column_count; ++j ) {
+                for( index_type k = 0; k < column_count; ++k ) {
+                    temp.elements[i * other.column_count + j] +=
+                        elements[i * column_count + k] * other.elements[k * other.column_count + j];
+                }
+            }
+        }
+
+        // Commit the result.
+        *this = std::move( temp );
+        return *this;
+    }
+
 
     template<typename T>
     bool Matrix<T>::operator==( const Matrix &other ) const
