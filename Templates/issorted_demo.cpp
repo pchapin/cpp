@@ -21,4 +21,10 @@ int main( )
     if( vtsu::is_sorted( v.begin( ), v.end( ) ) ) {
         std::cout << "The array is now sorted!" << std::endl;
     }
+
+    std::sort( v.begin( ), v.end( ), std::greater<int>( ) );
+
+    if( vtsu::is_sorted( v.begin( ), v.end( ), std::greater<int>( ) ) ) {
+        std::cout << "The array is now sorted in reverse order!" << std::endl;
+    }
 }
