@@ -3,6 +3,7 @@
  *  \author Peter Chapin <peter.chapin@vermontstate.edu>
  */
 
+#include <algorithm>
 #include <iostream>
 #include <cctype>
 #include <cstring>

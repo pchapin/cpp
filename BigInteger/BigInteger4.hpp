@@ -74,8 +74,8 @@ namespace vtsu {
         operator unsigned long( );
 
     private:
-        using storage_type = std::uint32_t;
-        using compute_type = std::uint64_t;
+        using storage_type = std::uint16_t;
+        using compute_type = std::uint32_t;
 
         // INVARIANT: If the represented value is zero, the digits vector is empty. Otherwise
         // the first digit in the vector is the least signification digit. Leading zero digits

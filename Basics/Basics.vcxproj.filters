@@ -18,14 +18,5 @@
     <ClCompile Include="const.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="references.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="reversefile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="reverselines.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,3 +1,8 @@
+# Visual Studio
+x64
+.vs
+*.user
+
 # Prerequisites
 *.d
 

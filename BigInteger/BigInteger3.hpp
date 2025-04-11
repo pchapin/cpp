@@ -76,8 +76,8 @@ namespace vtsu {
         // typedef. Because these declarations are in the private section of the class, these
         // types cannot be used by client code. This is keeping with the principle of least
         // visibility.
-        using storage_type = std::uint32_t;
-        using compute_type = std::uint64_t;
+        using storage_type = std::uint16_t;
+        using compute_type = std::uint32_t;
 
         // INVARIANT: If the represented value is zero, `digit_count` is zero and `digits` is
         // the null pointer. Otherwise, `digits` points at an array of size `digit_count`
